@@ -47,12 +47,11 @@
     {% else %}
     Create Tweet 
     {% endif %}
-    <form action ="post" enctype ='multipart/form-data'
-    class = "form">
-    {{ form }}<button class = '
-    button.btn.btn_warning' type = 'submit'>Submit</button>
-    </form>
-    <a href = "{%url 'tweet_list' %}">Back to tweet list </a 
+    <form method="POST" action="{% url 'tweet_create' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn_warning" type="submit">Submit</button>
+  </form>
 </h2>    
 
 </body>
