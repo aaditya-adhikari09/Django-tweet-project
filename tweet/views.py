@@ -1,7 +1,10 @@
 from django.shortcuts import render ,redirect ,HttpResponse
 from .models import Tweet
-from .forms import TweetForm
-from django.shortcuts import get_object_or_404
+from .forms import TweetForm 
+from django.shortcuts import get_object_or_404 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 
@@ -13,7 +16,7 @@ def tweet_list(request):
     return render(request ,'tweet_list.html',{'tweets':tweets})
     return HttpResponse('this page is working')
 
-
+@login_required
 def tweet_create(request):
     if request.method == 'POST':
         form = TweetForm(request.POST,request.FILES)
@@ -28,29 +31,33 @@ def tweet_create(request):
     else :
         form = TweetForm()
     return render(request,'tweet_form.html',{'form':form})
-    
 
+@login_required
 def tweet_edit(request, tweet_id):
-    tweet = get_object_or_404(Tweet, id=tweet_id)
-    if request.method == 'GET':
-        form = TweetForm(instance=tweet) 
-        return render(request, 'edit_tweet.html', {'form': form, 'tweet': tweet})
-    
+    tweet = get_object_or_404(Tweet, pk=tweet_id, user=request.user)
     if request.method == 'POST':
-        form = TweetForm(request.POST, instance=tweet)  
+        form = TweetForm(request.POST, request.FILES, instance=tweet)
         if form.is_valid():
-            form.save()  
-            return redirect('tweet_list')
-        else:
-            return render(request, 'edit_tweet.html', {'form': form, 'tweet': tweet})
+            form.save()  # Save the updated tweet
+            return redirect('tweet_list')  # Redirect to the tweet list after saving
+    else:
+        # For a GET request, initialize the form with the current instance
+        form = TweetForm(instance=tweet)
+    
+    return render(request, 'edit_tweet.html', {'form': form, 'tweet': tweet})
 
-
+@login_required
 def tweet_delete(request,tweet_id):
     tweet = get_object_or_404(Tweet,pk = tweet_id,user= request.user)
     if request.method == 'POST':
         tweet.delete()
-        return redirect('tweet_list.html')
+        return redirect('tweet_list')
     return render(request,'tweet_confirm_delete.html',{'tweet':tweet})
 
 def tweet_post(request):
-    return HttpResponse('this is tweetpost')
+    return HttpResponse('this is tweetpost') 
+
+
+
+def register(request):
+    return render(request,'registration/register.html')

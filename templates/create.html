@@ -1,44 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Tweet</title>
-</head>
-<body>
-    <h1>Create a New Tweet</h1>
-    
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <div>
-            <label for="id_text">Text:</label>
-            {{ form.text }}
-            {% if form.text.errors %}
-                <ul>
-                    {% for error in form.text.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
+{% extends navbar.html %}
 
-        <div>
-            <label for="id_photo">Photo:</label>
-            {{ form.photo }}
-            {% if form.photo.errors %}
-                <ul>
-                    {% for error in form.photo.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
 
-        <button type="submit">Create Tweet</button>
-    </form>
 
-    <br>
-    <a href="{% url 'tweet_list' %}">Back to Tweet List</a>
+    <div class="welcome-message">
+        <h1>Welcome to Tweet</h1>
+    </div>
+
+    <div class="create-tweet">
+        <h2>Create Tweet</h2>
+        <form action="#" method="POST" enctype="multipart/form-data">
+            <label for="tweet-text">Text:</label>
+            <textarea id="tweet-text" name="tweet-text" placeholder="What's happening?" required></textarea>
+
+            <label for="tweet-photo">Photo:</label>
+            <input type="file" id="tweet-photo" name="tweet-photo">
+
+            <button type="submit" class="submit-btn">Tweet</button>
+        </form>
+    </div>
+ {% endblock %}
 </body>
 </html>
